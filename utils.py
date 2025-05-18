@@ -1,0 +1,56 @@
+import pandas as pd
+from datetime import datetime, timedelta
+import smtplib
+import os
+from email.mime.text import MIMEText
+from dotenv import load_dotenv
+
+load_dotenv()
+
+EMAIL_USER = os.getenv('EMAIL_USER')
+EMAIL_PASS = os.getenv('EMAIL_PASS')
+
+reminder_data = []
+
+def parse_excel(file_path):
+    df = pd.read_excel(file_path, skiprows=1)
+    reminders = []
+    for _, row in df.iterrows():
+        try:
+            factory = row['Unnamed: 1']
+            audit_date = pd.to_datetime(row['Unnamed: 3'])
+            schedule = row['Unnamed: 8']
+            emails = str(row['Unnamed: 6']).replace(';', '\n').split('\n')
+            reminder_days = int(schedule.split()[0])
+            reminder_date = audit_date - timedelta(days=reminder_days)
+            reminders.append({
+                'factory': factory,
+                'audit_date': audit_date.date(),
+                'reminder_date': reminder_date.date(),
+                'emails': [e.strip() for e in emails if e.strip()],
+            })
+        except Exception as e:
+            print("Skipping row due to error:", e)
+            continue
+    return reminders
+
+def save_reminders(reminders):
+    global reminder_data
+    reminder_data = reminders
+
+def get_due_reminders():
+    today = datetime.today().date()
+    return [r for r in reminder_data if r['reminder_date'] == today]
+
+def send_email(subject, body, to_emails):
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = EMAIL_USER
+    msg['To'] = ', '.join(to_emails)
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(EMAIL_USER, EMAIL_PASS)
+            smtp.sendmail(EMAIL_USER, to_emails, msg.as_string())
+            print("Email sent to", to_emails)
+    except Exception as e:
+        print("Email sending failed:", e)
