@@ -32,7 +32,7 @@ def parse_excel(file_path):
         except Exception as e:
             print("Skipping row due to error:", e)
             continue
-     print(reminders)       
+    print(reminders)       
     return reminders
 
 def save_reminders(reminders):
