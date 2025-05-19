@@ -32,7 +32,7 @@ def index():
             flash('Uploaded and parsed!', 'success')
         else:
             flash('Please upload a valid .xlsx file', 'danger')
-    return render_template('index.html', reminders=reminders)
+    return render_template('templates/index.html', reminders=reminders)
 
 @app.route('/run_reminders', methods=['POST'])
 def run_reminders():
