@@ -13,14 +13,14 @@ EMAIL_PASS = os.getenv('EMAIL_PASS')
 reminder_data = []
 
 def parse_excel(file_path):
-    df = pd.read_excel(file_path, skiprows=1)
+    df = pd.read_excel(file_path)
     reminders = []
     for _, row in df.iterrows():
         try:
-            factory = row['Unnamed: 1']
-            audit_date = pd.to_datetime(row['Unnamed: 3'])
-            schedule = row['Unnamed: 8']
-            emails = str(row['Unnamed: 6']).replace(';', '\n').split('\n')
+            factory = row['Factory Name']
+            audit_date = pd.to_datetime(row['Audit Date'])
+            schedule = row['Schedule']
+            emails = str(row['Email ID']).replace(';', '\n').split('\n')
             reminder_days = int(schedule.split()[0])
             reminder_date = audit_date - timedelta(days=reminder_days)
             reminders.append({
@@ -32,6 +32,7 @@ def parse_excel(file_path):
         except Exception as e:
             print("Skipping row due to error:", e)
             continue
+     print(reminders)       
     return reminders
 
 def save_reminders(reminders):
