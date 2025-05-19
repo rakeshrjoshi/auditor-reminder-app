@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-EMAIL_USER = os.getenv('EMAIL_USER')
-EMAIL_PASS = os.getenv('EMAIL_PASS')
+EMAIL_USER = os.getenv('ims.support@abcims.com')
+EMAIL_PASS = os.getenv('Devgiri#123')
 
 reminder_data = []
 
