@@ -43,7 +43,7 @@ def run_reminders():
             f"Dear Team,\n\n"
             f"Audit for “{r['factory']}” is on {r['audit_date']}.\n"
             f"Please prepare.\n\n"
-            f"– Audit Reminder System"
+            f"– Technical Team"
         )
         send_email(subject, body, r['emails'])
     return {'sent': len(due)}, 200
