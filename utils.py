@@ -48,6 +48,7 @@ def send_email(subject, body, to_emails):
     msg['Subject'] = subject
     msg['From'] = EMAIL_USER
     msg['To'] = ', '.join(to_emails)
+    print(msg)
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
             smtp.login(EMAIL_USER, EMAIL_PASS)
