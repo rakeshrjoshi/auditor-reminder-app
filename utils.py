@@ -54,7 +54,8 @@ def send_email(subject, body, to_emails):
     msg['To'] = ', '.join(to_emails)
     print(msg)
     try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        with smtplib.SMTP('smtp.office365.com', 587) as smtp:
+            smtp.starttls()
             smtp.login(EMAIL_USER, EMAIL_PASS)
             smtp.sendmail(EMAIL_USER, to_emails, msg.as_string())
             print("Email sent to", to_emails)
