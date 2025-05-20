@@ -33,18 +33,19 @@ def index():
         else:
             flash('Please upload a valid .xlsx file', 'danger')
     return render_template('index.html', reminders=reminders)
-    def run_reminders():
-        due = get_due_reminders()
-        for r in due:
-            subject = f"Reminder: Upcoming Audit for {r['factory']}"
-            body = (
-                f"Dear “{r['factory']}” Quality Team,\n\n"
-                f"Audit for “{r['factory']}” is on {r['audit_date']}.\n"
-                f"Please prepare.\n\n"
-                f"– Technical Team"
-            )
-            send_email(subject, body, r['emails'])
-        return {'sent': len(due)}, 200
+@app.route('/run_reminders', methods=['GET'])
+def run_reminders():
+    due = get_due_reminders()
+    for r in due:
+        subject = f"Reminder: Upcoming Audit for {r['factory']}"
+        body = (
+            f"Dear “{r['factory']}” Quality Team,\n\n"
+            f"Audit for “{r['factory']}” is on {r['audit_date']}.\n"
+            f"Please prepare.\n\n"
+            f"– Technical Team"
+        )
+        send_email(subject, body, r['emails'])
+    return {'sent': len(due)}, 200
 
 
 
