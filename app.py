@@ -40,7 +40,7 @@ def run_reminders():
     for r in due:
         subject = f"Reminder: Upcoming Audit for {r['factory']}"
         body = (
-            f"Dear Team,\n\n"
+            f"Dear “{r['factory']}” Quality Team,\n\n"
             f"Audit for “{r['factory']}” is on {r['audit_date']}.\n"
             f"Please prepare.\n\n"
             f"– Technical Team"
