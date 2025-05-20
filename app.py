@@ -34,7 +34,7 @@ def index():
             flash('Please upload a valid .xlsx file', 'danger')
     return render_template('index.html', reminders=reminders)
 
-@app.route('/run_reminders', methods=['GET'])
+@app.route('/run_reminders', methods=['POST'])
 def run_reminders():
     due = get_due_reminders()
     for r in due:
