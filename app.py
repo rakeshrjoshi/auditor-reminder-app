@@ -45,7 +45,8 @@ def run_reminders():
             f"Please prepare.\n\n"
             f"– Audit Reminder System"
         )
-        send_email(subject, body, r['emails'])
+        send_email(subject, body, r['emails'])\
+    print(due)
     return {'sent': len(due)}, 200
 
 if __name__ == "__main__":
