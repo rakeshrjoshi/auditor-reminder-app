@@ -26,7 +26,7 @@ def index():
         file = request.files.get('file')
         if file and allowed_file(file.filename):
             filename='reminders.xlsx'
-            path = os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(path)
             reminders = parse_excel(path)
             save_reminders(reminders)
