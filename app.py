@@ -25,7 +25,8 @@ def index():
     if request.method == 'POST':
         file = request.files.get('file')
         if file and allowed_file(file.filename):
-            path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
+            filename='reminders.xlsx'
+            path = os.path.join(app.config['UPLOAD_FOLDER'], filename))
             file.save(path)
             reminders = parse_excel(path)
             save_reminders(reminders)
@@ -33,6 +34,7 @@ def index():
         else:
             flash('Please upload a valid .xlsx file', 'danger')
     return render_template('index.html', reminders=reminders)
+    
 @app.route('/run_reminders', methods=['GET'])
 def run_reminders():
     due = get_due_reminders()
