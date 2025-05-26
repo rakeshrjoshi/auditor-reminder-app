@@ -1,36 +1,32 @@
+from utils import parse_excel, get_due_reminders, send_email, save_reminders
 import os
-import pandas as pd
-from datetime import datetime
-import smtplib
-from email.message import EmailMessage
 
-def send_email(subject, body, to_emails):
-    msg = EmailMessage()
-    msg['Subject'] = subject
-    msg['From'] = os.environ['EMAIL_USER']
-    msg['To'] = ', '.join(to_emails)
-    msg.set_content(body)
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login(os.environ['EMAIL_USER'], os.environ['EMAIL_PASS'])
-        smtp.send_message(msg)
+EXCEL_PATH = os.path.join('uploads', 'reminders.xlsx')
 
 def main():
-    excel_path = 'reminders.xlsx'
-    if not os.path.exists(excel_path):
-        print("No reminder file found.")
+    if not os.path.exists(EXCEL_PATH):
+        print("No Excel file found. Skipping reminders.")
         return
 
-    df = pd.read_excel(excel_path)
-    today = datetime.today().date()
+    # Parse and load reminders
+    reminders = parse_excel(EXCEL_PATH)
+    save_reminders(reminders)
 
-    for _, row in df.iterrows():
-        reminder_date = row['Reminder Date'].date()
-        if reminder_date == today:
-            subject = f"Reminder: Upcoming Audit for {row['Factory']}"
-            body = f"Dear Team,\n\nAudit for '{row['Factory']}' is on {row['Audit Date'].date()}.\nPlease prepare accordingly.\n\n— Audit Reminder System"
-            to_emails = [email.strip() for email in row['Emails'].split(',')]
-            send_email(subject, body, to_emails)
+    # Filter today's reminders
+    due = get_due_reminders()
+    for r in due:
+        subject = f"Reminder: Upcoming Audit for {r['factory']}"
+        body = (
+            f"Dear “{r['factory']}” Quality Team,\n\n"
+            f"Audit for “{r['factory']}” is on {r['audit_date']}.\n"
+            f"Please prepare.\n\n"
+            f"– Technical Team"
+        )
+        send_email(subject, body, r['emails'])
+        print(f"Reminder sent to {r['emails']} for {r['factory']}")
+
+    if not due:
+        print("No reminders due today.")
 
 if __name__ == "__main__":
     main()
